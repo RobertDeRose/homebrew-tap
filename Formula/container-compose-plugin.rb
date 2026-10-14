@@ -1,11 +1,11 @@
 # Rendered by scripts/publish-homebrew.sh on each release and pushed to the
-# RobertDeRose/homebrew-tap repository. 0.1.0 and 1d36f64b1d18d314e4abc65d62b98347ca3b1cced9fc687f3643d32dfeda688e are filled in.
+# RobertDeRose/homebrew-tap repository. 0.2.0 and 6098f7da4335c792f7ae8ef1ae29c2e9a85782b6c4143b7ae96eab375fb93024 are filled in.
 class ContainerComposePlugin < Formula
   desc "Docker Compose as a plugin for Apple's container CLI"
   homepage "https://github.com/RobertDeRose/container-compose-plugin"
-  url "https://github.com/RobertDeRose/container-compose-plugin/releases/download/v0.1.0/container-compose-plugin-0.1.0-darwin-arm64.tar.gz"
-  sha256 "1d36f64b1d18d314e4abc65d62b98347ca3b1cced9fc687f3643d32dfeda688e"
-  version "0.1.0"
+  url "https://github.com/RobertDeRose/container-compose-plugin/releases/download/v0.2.0/container-compose-plugin-0.2.0-darwin-arm64.tar.gz"
+  sha256 "6098f7da4335c792f7ae8ef1ae29c2e9a85782b6c4143b7ae96eab375fb93024"
+  version "0.2.0"
   license "Apache-2.0"
 
   depends_on "container"
@@ -17,23 +17,46 @@ class ContainerComposePlugin < Formula
     # The shipped installer is for installs outside Homebrew.
     rm "install.sh"
     libexec.install Dir["*"], ".container-compose-plugin"
-  end
 
-  # The host loads plugins only from the container formula's own install
-  # root, so link this formula's stable opt path into it.
-  def post_install
-    plugins = Formula["container"].opt_libexec/"container-plugins"
-    plugins.mkpath
-    link = plugins/"compose"
-    link.unlink if link.symlink?
-    link.make_symlink opt_libexec
+    # Register on invocation, outside Homebrew's formula sandbox. Stable opt
+    # paths keep the wrapper valid when either formula is upgraded.
+    bin.mkpath
+    (bin/"compose").write <<~EOS
+      #!/bin/bash
+      set -euo pipefail
+      plugin="#{opt_libexec}"
+      destination="#{Formula["container"].opt_libexec}/container-plugins/compose"
+      if [[ -L "$destination" ]]; then
+        if [[ $(readlink "$destination") != "$plugin" ]]; then
+          echo "Refusing to replace an existing plugin symlink: $destination" >&2
+          exit 1
+        fi
+      elif [[ -e "$destination" ]]; then
+        echo "Refusing to replace an existing plugin directory: $destination" >&2
+        exit 1
+      else
+        mkdir -p "${destination%/compose}"
+        if ! ln -s "$plugin" "$destination" 2>/dev/null; then
+          # Another first invocation may have registered the same plugin.
+          if [[ ! -L "$destination" || $(readlink "$destination") != "$plugin" ]]; then
+            echo "Unable to register the Compose plugin at $destination" >&2
+            exit 1
+          fi
+        fi
+      fi
+      exec "#{Formula["container"].opt_bin}/container" compose "$@"
+    EOS
+    (bin/"compose").chmod 0755
   end
 
   def caveats
     <<~EOS
-      The plugin is linked into the container formula's plugin directory,
-      which `brew upgrade container` replaces. After upgrading container, run:
-        brew postinstall container-compose-plugin
+      Start the host if needed:
+        container system start
+      Run Compose with:
+        compose up -d
+      The compose command registers the plugin on first use and restores
+      registration after container upgrades. Then container compose works too.
     EOS
   end
 
