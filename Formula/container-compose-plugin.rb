@@ -1,10 +1,10 @@
 # Rendered by scripts/publish-homebrew.sh on each release and pushed to the
-# RobertDeRose/homebrew-tap repository. 0.1.0 and bfe020972594abc227f19487dd7b5bef55e8f07da59c549bfe96e8ea18252bb1 are filled in.
+# RobertDeRose/homebrew-tap repository. 0.1.0 and 1d36f64b1d18d314e4abc65d62b98347ca3b1cced9fc687f3643d32dfeda688e are filled in.
 class ContainerComposePlugin < Formula
   desc "Docker Compose as a plugin for Apple's container CLI"
   homepage "https://github.com/RobertDeRose/container-compose-plugin"
   url "https://github.com/RobertDeRose/container-compose-plugin/releases/download/v0.1.0/container-compose-plugin-0.1.0-darwin-arm64.tar.gz"
-  sha256 "bfe020972594abc227f19487dd7b5bef55e8f07da59c549bfe96e8ea18252bb1"
+  sha256 "1d36f64b1d18d314e4abc65d62b98347ca3b1cced9fc687f3643d32dfeda688e"
   version "0.1.0"
   license "Apache-2.0"
 
