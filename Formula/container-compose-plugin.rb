@@ -1,11 +1,11 @@
 # Rendered by scripts/publish-homebrew.sh on each release and pushed to the
-# RobertDeRose/homebrew-tap repository. 0.2.0 and 6098f7da4335c792f7ae8ef1ae29c2e9a85782b6c4143b7ae96eab375fb93024 are filled in.
+# RobertDeRose/homebrew-tap repository. 0.2.1 and 04f322db373ef597d0d586c6f0569330fba3b02d789b4a768b51a1358dc25ad8 are filled in.
 class ContainerComposePlugin < Formula
   desc "Docker Compose as a plugin for Apple's container CLI"
   homepage "https://github.com/RobertDeRose/container-compose-plugin"
-  url "https://github.com/RobertDeRose/container-compose-plugin/releases/download/v0.2.0/container-compose-plugin-0.2.0-darwin-arm64.tar.gz"
-  sha256 "6098f7da4335c792f7ae8ef1ae29c2e9a85782b6c4143b7ae96eab375fb93024"
-  version "0.2.0"
+  url "https://github.com/RobertDeRose/container-compose-plugin/releases/download/v0.2.1/container-compose-plugin-0.2.1-darwin-arm64.tar.gz"
+  sha256 "04f322db373ef597d0d586c6f0569330fba3b02d789b4a768b51a1358dc25ad8"
+  version "0.2.1"
   license "Apache-2.0"
 
   depends_on "container"
@@ -25,6 +25,10 @@ class ContainerComposePlugin < Formula
       #!/bin/bash
       set -euo pipefail
       plugin="#{opt_libexec}"
+      # The host treats --version as a global flag, even after the plugin name.
+      if [[ $# -eq 1 && $1 == --version ]]; then
+        exec "$plugin/bin/compose" "$@"
+      fi
       destination="#{Formula["container"].opt_libexec}/container-plugins/compose"
       if [[ -L "$destination" ]]; then
         if [[ $(readlink "$destination") != "$plugin" ]]; then
