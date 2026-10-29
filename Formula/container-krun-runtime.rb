@@ -1,11 +1,11 @@
 # Rendered by scripts/publish-homebrew.sh on each release and pushed to the
-# RobertDeRose/homebrew-tap repository. 0.9.0 and 68cc1e2ebea56f8e4201c8d4158cae0b0d5ea9de6919eed4b853c558e3b82002 are filled in.
+# RobertDeRose/homebrew-tap repository. 0.9.1 and 2defb070fbc9e2ce989ae9fb5a4cf128f882539a4c85d14fb301fe628f200cbb are filled in.
 class ContainerKrunRuntime < Formula
   desc "Apple Container runtime that returns freed guest memory to macOS"
   homepage "https://robertderose.github.io/container-krun-runtime/"
-  url "https://github.com/RobertDeRose/container-krun-runtime/releases/download/v0.9.0/container-krun-runtime-0.9.0-darwin-aarch64.tar.gz"
-  sha256 "68cc1e2ebea56f8e4201c8d4158cae0b0d5ea9de6919eed4b853c558e3b82002"
-  version "0.9.0"
+  url "https://github.com/RobertDeRose/container-krun-runtime/releases/download/v0.9.1/container-krun-runtime-0.9.1-darwin-aarch64.tar.gz"
+  sha256 "2defb070fbc9e2ce989ae9fb5a4cf128f882539a4c85d14fb301fe628f200cbb"
+  version "0.9.1"
   license "Apache-2.0"
 
   depends_on "container"
